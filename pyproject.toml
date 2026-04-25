@@ -6,4 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=0.96.0",
+    "google-auth>=2.49.2",
+    "gspread>=6.2.1",
+    "twilio>=9.10.5",
 ]
