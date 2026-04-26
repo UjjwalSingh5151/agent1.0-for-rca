@@ -16,14 +16,23 @@ anthropic_client = anthropic.Anthropic(
 
 # --- Google Sheets ---
 def get_sheets_client():
-    credentials_path = os.environ.get("GOOGLE_CREDENTIALS_PATH")
+    import json as json_lib
     scopes = [
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive"
     ]
-    creds = Credentials.from_service_account_file(
-        credentials_path, scopes=scopes
-    )
+    # Try JSON content first (for Render), fall back to file path (for local)
+    credentials_json = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+    if credentials_json:
+        creds_dict = json_lib.loads(credentials_json)
+        creds = Credentials.from_service_account_info(
+            creds_dict, scopes=scopes
+        )
+    else:
+        credentials_path = os.environ.get("GOOGLE_CREDENTIALS_PATH")
+        creds = Credentials.from_service_account_file(
+            credentials_path, scopes=scopes
+        )
     return gspread.authorize(creds)
 
 def get_sheet_data():
